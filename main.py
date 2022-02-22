@@ -1,7 +1,17 @@
-from fei.ppds import Mutex, Thread
+from fei.ppds import Thread
 
 
 class Shared:
+    """
+        Representation of object holding observed data and its parameters
+
+        Arguments:
+        counter -- array index
+        end -- array length
+        elms -- array the size of end value filled with 0's
+
+    """
+
     def __init__(self, end_count):
         self.counter = 0
         self.end = end_count
@@ -21,6 +31,13 @@ def occur_dict(a):
 
 
 def function_test(shared_object):
+    """
+        Increment each element in the elems array .
+
+        Arguments:
+        shared -- Shared class object passed between threads
+
+    """
     while shared_object.counter < shared_object.end:
         if len(shared_object.elms) > shared_object.counter:
             shared_object.elms[shared_object.counter] += 1
