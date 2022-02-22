@@ -32,7 +32,7 @@ def occur_dict(a):
 
 def function_test(shared_object):
     """
-        Increment each element in the elems array .
+        Increment each element in the elms array .
 
         Arguments:
         shared -- Shared class object passed between threads
