@@ -148,3 +148,7 @@ thread: 8
 thread: 9
 [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89]
 ```
+
+#### Questions to answer:
+  - In my case the smallest count of synchronisation objects used for this task is 2 (1 mutex paired with 1 semaphore), but I can see a possibility of solving this only with mutex
+  - I have described my solution in the upper text but I believe this task can be solved with Event as well as semaphore.
