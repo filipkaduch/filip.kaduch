@@ -79,8 +79,8 @@ def hydrogen(shared):
     """
         This methods simulates the hydrogen molecule process.
         In the beginning we lock our process because we are going to modify
-        our shared object hydrogen counter and then check whether we can start formation
-        or we have to wait for other molecules to appear.
+        our shared object hydrogen counter and then check whether we can
+        start formation or we have to wait for other molecules to appear.
         Attributes:
             shared - object of type Shared which is modified between Threads
     """
@@ -113,11 +113,12 @@ def bond():
 def oxygen(shared):
     """
         This methods simulates the oxygen molecule process.
-        In the beginning we lock our process because we are going to modify
-        our shared object oxygen counter and then check whether we can start formation
-        or we have to wait for other molecules to appear. We only have one awaited oxygen
-        molecule during bonding so we can use this as mutex unlocker which is absent in
-        else branch.
+        In the beginning we lock our process because we are going
+        to modify our shared object oxygen counter and then check
+        whether we can start formation or we have to wait for other
+        molecules to appear. We only have one awaited oxygen
+        molecule during bonding so we can use this as mutex
+        unlocker which is absent in else branch.
         Attributes:
             shared - object of type Shared which is modified between Threads
     """
@@ -145,7 +146,8 @@ def oxygen(shared):
 
 def main():
     """
-        Main part of our experimentation generating hydrogen and oxygen infinitely.
+        Main part of our experimentation generating hydrogen
+        and oxygen infinitely.
     """
     shared = Shared()
 
