@@ -5,7 +5,9 @@
 #### Python version:
   3.8
 #### Modules:
-  from fei.ppds import Event, Mutex, Semaphore, Thread
+  from fei.ppds import Mutex, print, Semaphore, Thread
+  from random import randint
+  from time import sleep
 
 
 #### Tasks:
