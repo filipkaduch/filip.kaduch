@@ -24,13 +24,13 @@
 #### Methods: 
 ##### 1. find_low(data, index)
     This methods finds the lowest value in line of loaded data.
-    ###### Attributes:
+    Attributes:
         data - list of int values from 1 - 9
         index - current line index
 
 ##### 2. find_dmg(data, index)
     This methods finds the highest value in line of loaded data.
-    ###### Attributes:
+    Attributes:
         data - list of int values from 1 - 9
         index - current line index
         
