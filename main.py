@@ -36,8 +36,9 @@ def find_low(data, index):
 
 class Dispatcher:
     """
-        This class represents manager for co - programs working and running with same data
-        and in the same time. It provides one mode to run tasks in loop.
+        This class represents manager for co - programs working and
+        running with same data and in the same time. It provides
+        one mode to run tasks in loop.
 
         Attributes:
             tasks - list of tasks to process
