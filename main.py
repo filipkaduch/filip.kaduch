@@ -1,101 +1,99 @@
 """
-    This code snippet displays the implementation of Scheduler in order
-    to manage 'tasks' execution and it's data flow.
+    asyncio - required for async/await syntax
+    aiohttp - asynchronous HTTP client/server requests
+    time - used for tracking of elapsed time in task
+    json - load response as dictionary
+    os.path - check for todos.txt file existence
+"""
+import asyncio
+import aiohttp
+import time
+import json
+import os.path
+
+"""
+    This code snippet displays the implementation of asynchronous
+    version of response text title's getter service.
 """
 
 
-def find_dmg(data, index):
+def check(title):
     """
-        This methods finds the highest value in line of data.
+        This methods checks for the existence of title in
+        todos.txt file.
         Attributes:
-            data - list of int values from 1 - 9
-            index - current line index
+            title - string value to check in file
     """
-    highest = 0
-    for j in range(len(data)):
-        if data[j] > highest:
-            highest = data[j]
-    print(f'HIGHEST number in line: {index}:', highest)
-    yield
+    if os.path.exists("todos.txt"):
+        with open("todos.txt") as f:
+            datafile = f.readlines()
+        for line in datafile:
+            if title in line:
+                return True
+        return False
+    return False
 
 
-def find_low(data, index):
+async def task(que, index):
     """
-        This methods finds the lowest value in line of data.
+        This methods first checks the multi-producer/consumer queue state and
+        then proceeds to iterate over queue content. During this loop
+        we are getting data from placeholder server and then try to write
+        placeholder title to file if it's not already gathered
+        by previous task.
         Attributes:
-            data - list of int values from 1 - 9
-            index - current line index
-    """
-    highest_current = 10
-    for j in range(len(data)):
-        if data[j] < highest_current:
-            highest_current = data[j]
-    print(f'LOWEST number in line: {index}:', highest_current)
-    yield
-
-
-class Dispatcher:
-    """
-        This class represents manager for co - programs working and
-        running with same data and in the same time. It provides
-        one mode to run tasks in loop.
-
-        Attributes:
-            tasks - list of tasks to process
-            loop - managing method for launching the tasks in rotating loop
-            new - adds task to list
-            schedule - launches task generator
-            remove - close the generator and remove it from list
-    """
-    def __init__(self):
-        self.tasks = []
-
-    def new(self, task):
-        self.tasks.append(task)
-
-    def schedule(self, index):
-        next(self.tasks[index])
-
-    def loop(self):
-        cur_index = 0
-        while self.tasks:
-            try:
-                if cur_index < len(self.tasks):
-                    self.schedule(cur_index)
-                else:
-                    yield
-                cur_index += 1
-            except StopIteration:
-                self.remove(cur_index)
-
-    def remove(self, index):
-        self.tasks[index].close()
-        del self.tasks[index]
-
-
-def main():
-    """
-        Main part of our experimentation with expanded generators used
-        with planned execution through dispatcher. We load our entry file
-        and for each line data we alternatively call find_low and find_dmg
-        methods printing relevant information on current line.
+            que - multi-producer/consumer Queue
+            index - current task index
     """
 
-    dispatcher = Dispatcher()
-    line_indexer = 0
-    with open('entry.txt', 'r') as f:
-        for line in f:
-            line_data = []
-            for num in line.split(' '):
-                line_data.append(int(num))
-            fl = find_low(line_data, line_indexer)
-            fd = find_dmg(line_data, line_indexer)
-            line_indexer += 1
-            dispatcher.new(fd)
-            dispatcher.new(fl)
+    if que.empty():
+        print(f'Task {index} out of work')
 
-        next(dispatcher.loop())
+    async with aiohttp.ClientSession() as session:
+        while not que.empty():
+            todo_id = await que.get()
+            url = "https://jsonplaceholder.typicode.com/todos/" + str(todo_id)
+            print(f'Task {index} running {url}')
+
+            start_t = time.perf_counter()
+            async with session.get(url) as response:
+                res = await response.text()
+                title = json.loads(res)["title"]
+                if not check(title):
+                    f = open("todos.txt", "a")
+                    f.write(f'Title: {title}, Task: {index}\n')
+                    f.close()
+
+            elapsed = time.perf_counter() - start_t
+            print(f'Task {index} elapsed time {elapsed:2f}')
+
+
+async def main():
+    """
+        Main part of our experimentation with asynchronous execution of tasks
+        used with native coroutines. We fill our async Queue with id's
+        to fetch data from server and then proceed to asynchronously
+        launch the tasks with list of id's to process all together.
+    """
+
+    wq = asyncio.Queue()
+
+    for todo_id in range(1, 10):
+        await wq.put(todo_id)
+
+    tasks = [
+        task(wq, "One"),
+        task(wq, "Two")
+    ]
+    start = time.perf_counter()
+    await asyncio.gather(*tasks)
+    elapsed = time.perf_counter() - start
+    print(f'Total elapsed time {elapsed:2f}')
 
 
 if __name__ == '__main__':
-    main()
+    # On Windows seems to be a problem with EventLoopPolicy
+    # Solution found:
+    # https://stackoverflow.com/questions/45600579/asyncio-event-loop-is-closed-when-getting-loop
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+    asyncio.run(main())
