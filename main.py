@@ -118,7 +118,7 @@ def edit_dist(str1, str2, len1, len2):
     in order to perform the comparison and
     correction of corrupted words.
 """
-with open('slovnik.txt', 'r') as reader:
+with open('resource_dict.txt', 'r') as reader:
     dict_lines = [unicodedata.normalize('NFD', line.rstrip())
                   .encode('ascii', 'ignore')
                   .decode("utf-8") for line in
