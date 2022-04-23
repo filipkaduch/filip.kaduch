@@ -18,7 +18,7 @@
     fei.ppds - we are using print from this module to keep it synced
 
 #### Task:
-  Create a application which demonstrates usage of cuda within python and it's module numba.
+  Create an application which demonstrates usage of cuda within python and it's module numba.
 
 #### Methods: 
 ##### 1. my_kernel(Array)
@@ -41,7 +41,7 @@
 ### Experimentation:
 Main part of our experimentation loads the
 dictionary of words to compare and then
-gets data from corrupted file for correction.
+gets data from corrupted file for correction (50 words).
 It uses 2 blocks per grid with 32 threads per grid
 in order to perform the comparison and
 correction of corrupted words. In each kernel we are printing the current word and current position in grid.
