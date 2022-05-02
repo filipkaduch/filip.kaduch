@@ -6,13 +6,11 @@
     unicodedata - use for decoding of loaded corrupted text
     time - used for tracking of elapsed time of cuda processing the data
     numpy - library used for working with arrays
-    fei.ppds - we are using print from this module to keep it synced
 """
 import time
 import unicodedata
 import numpy as np
 from numba import cuda
-from fei.ppds import print
 
 """
     This code snippet displays the implementation of corrupted
